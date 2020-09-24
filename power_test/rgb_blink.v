@@ -7,7 +7,7 @@
 //`define LFOSC // Select the low frequency 10kHz clock
 //`define USE_PLL
 //`define RGB_DRV
-`define MULT
+//`define MATH
 
 `ifdef USE_PLL
 `include "my_pll.v"
@@ -86,21 +86,20 @@ module rgb_blink
     reg [7:0] ctr1, ctr2;
     wire [15:0] result;
 
-    // Add pullups/downs
+    // Add pullups/downs to eperiment with what they do
     SB_IO #(.PIN_TYPE(6'b0000_01), .PULLUP(1'b1) ) io_spi_ssn (.PACKAGE_PIN(spi_ssn_io), .D_IN_0(spi_ssn) );
     SB_IO #(.PIN_TYPE(6'b0000_01), .PULLUP(1'b1) ) io_spi_sck (.PACKAGE_PIN(spi_sck_io), .D_IN_0(spi_sck) );
     SB_IO #(.PIN_TYPE(6'b0000_01), .PULLUP(1'b1) ) io_spi_miso (.PACKAGE_PIN(spi_miso_io), .D_IN_0(spi_miso) );
-    SB_IO #(.PIN_TYPE(6'b0000_01), .PULLUP(1'b1) ) io_spi_mosi (.PACKAGE_PIN(spi_mosi_io), .D_IN_0(spi_mosi) );
 
     SB_IO #(.PIN_TYPE(6'b0000_01), .PULLUP(1'b1) ) io_23 (.PACKAGE_PIN(gpio_23_io), .D_IN_0(gpio_23) );
     SB_IO #(.PIN_TYPE(6'b0000_01), .PULLUP(1'b1) ) io_25 (.PACKAGE_PIN(gpio_25_io), .D_IN_0(gpio_25) );
     SB_IO #(.PIN_TYPE(6'b0000_01), .PULLUP(1'b1) ) io_26 (.PACKAGE_PIN(gpio_26_io), .D_IN_0(gpio_26) );
     SB_IO #(.PIN_TYPE(6'b0000_01), .PULLUP(1'b1) ) io_27 (.PACKAGE_PIN(gpio_27_io), .D_IN_0(gpio_27) );
 
-    // Disable the SPI Flash
-    //assign spi_ssn = 1'b1; // Pullup on board
-    assign spi_mosi = munged;
+    // Assign a pin so it doesnt optimize anything away
+    assign spi_mosi_io = munged;
 
+    // Prevent optimization of all inputs
     assign munged = |{spi_miso,
     gpio_23, gpio_25, gpio_26, gpio_27, gpio_32, gpio_31, gpio_37,
     gpio_34, gpio_43, gpio_36, gpio_42, gpio_38, gpio_28, gpio_20, gpio_10,
@@ -111,11 +110,10 @@ module rgb_blink
     // Output so that everything doesnt get optimized away
     assign gpio_10_io = frequency_counter_i[CTR_SIZE-1] | (&ctr1) | (&ctr2) | (&result);
 
-//----------------------------------------------------------------------------
-//                                                                          --
-//                       Internal Oscillator                                --
-//                                                                          --
-//----------------------------------------------------------------------------
+    // Clock source:
+    //   - External
+    //   - Low freq oscillator
+    //   - High frequency oscillator
 `ifdef EXTOSC
     assign clk_osc = gpio_35_io; // Has to be used with the PLL!
 `else 
@@ -129,6 +127,7 @@ module rgb_blink
     `endif
 `endif
 
+    // To use the PLL or not
 `ifdef USE_PLL
    pll u_pll(.clock_in(clk_osc), .clock_out(clk), .locked() );
 `else
@@ -141,18 +140,17 @@ module rgb_blink
     end
 
     // Lets try some math and RAM accesses
+`ifdef MATH
     always @(posedge clk) begin
         ctr1 <= ctr1 + 3;
         ctr2 <= ctr2 + 5;
     end
     assign result = ctr1 * ctr2;
-    
-//----------------------------------------------------------------------------
-//                                                                          --
-//                       Instantiate RGB primitive                          --
-//                                                                          --
-//----------------------------------------------------------------------------
+`else
+    assign result = 0;
+`endif
 
+// LED driver
 `ifdef RGB_DRV
     SB_RGBA_DRV RGB_DRIVER (
       .RGBLEDEN (1'b1),
@@ -168,15 +166,16 @@ module rgb_blink
     defparam RGB_DRIVER.RGB1_CURRENT = "0b000001";
     defparam RGB_DRIVER.RGB2_CURRENT = "0b000001";
 `else
-    assign led_blue = 1'b0;
-    assign led_red = 1'b1;
+    assign led_blue = 1'b1;
+    assign led_red = 1'b0;
     assign led_green = 1'b1;
 `endif
 
 `else
+    // BLANK design
     assign led_blue = 1'b0;
     assign led_red = 1'b1;
     assign led_green = 1'b1;
-`endif // BLANK
+`endif
 
 endmodule

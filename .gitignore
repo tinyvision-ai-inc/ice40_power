@@ -11,3 +11,5 @@ desktop.ini
 *.json
 *.blif
 *.asc
+*.bin
+my_pll.v
