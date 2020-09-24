@@ -1,0 +1,13 @@
+# Temporary files
+*.000
+*.bak
+_autosave-*
+*.tmp
+*cache
+desktop.ini
+*.history
+
+# FPGA build droppings
+*.json
+*.blif
+*.asc
