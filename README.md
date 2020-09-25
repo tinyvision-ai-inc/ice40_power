@@ -49,7 +49,36 @@ The FPGA boots from Flash programmed with low power 10kHz design. The FPGA confi
 
 ![ice40 IO bank 1 power bootup current](ice40_VIO1_bootup.png)
 
+# A sample low power design
+OK, great, now that we have measurements, what good is it if we cant use it! 
+Lets start with a toy design so its easy to understand.
+## Requirements
+- Slow clock is to be the low speed 10kHz that allows the FPGA to respond to external interrupts 
+- Wake up for 50ms to do some useful work every few seconds, the "worker design" may be clock gated or kept running at 10kHz in case it needs to respond to an interrupt.
+- Work when awake should be at 48MHz clock
+
+## Design
+Clearly, we need to gate the clock on the FPGA when its asleep. Switching the design between 10kHz and 48MHz requires special care to avoid glitches on the clock when multiplexing between the two clocks. A Glitch free clock mux is a pretty standard component that does this cleanly.
+
+The 10kHz oscillator feeds not only the GFCM but also the timekeeper which switches the clock to the design that does the work. The timekeeper is a simple counter that selects the higher clock rate for 50ms every 3.2s. 
+
+The design that does the work in this case is a simple LED blinker and could be replaced by something quite complex.
+
+A simple testbench was used to prove out the design and get rid of bugs...
+
+## Results
+The full design consumes 62 LC's, 3 SB_GB, 1 LF_OSC, 1 HF_OSC and the RGB driver.
+Heres the current consumption of the FPGA on the core power rail. As you can see, this seems to have achieved the goal!
+
+![ICE40  low power design](lp_design\50ms_wakeup_power.png)
+
+- Only power on the core rail is measured
+- The 135uA current baseline is much higher than the current in the table measured. Its not clear what this is due to.
+- Duty cycling works! Peak current is 2mA while baseline power is about 135uA, average is 162uA as measured by the current meter.
+- The high frequency oscillator had to be disabled to get to the 135uA baseline when its output was not selected. If this isnt done, the baseline is significantly higher at about 630uA when the selected clock is 10kHz.
+
 # Future work
 - Check out power when mapping to BRAM vs. registers
 - Power consumption of IO banks with voltage and driving known loads
+- Current variation vs. temperature
 - Any other ideas?

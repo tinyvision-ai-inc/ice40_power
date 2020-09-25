@@ -1,0 +1,7 @@
+digraph G{
+  LF_OSC -> GFCM;
+  HF_OSC ->GFCM;
+  LF_OSC -> RTC;
+  RTC -> GFCM;
+  GFCM -> DESIGN;
+}

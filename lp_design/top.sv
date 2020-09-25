@@ -27,7 +27,7 @@ module top
     logic clk_sel;
 `ifndef SIM
     SB_LFOSC  u_lf_osc(.CLKLFPU(1'b1), .CLKLFEN(1'b1), .CLKLF(clk_lf));
-    SB_HFOSC  #(.CLKHF_DIV("0b10")) u_hf_osc (.CLKHFPU(1'b1), .CLKHFEN(clk_sel), .CLKHF(clk_hf));
+    SB_HFOSC  #(.CLKHF_DIV("0b00")) u_hf_osc (.CLKHFPU(1'b1), .CLKHFEN(clk_sel), .CLKHF(clk_hf));
 `else
     initial begin
         clk_lf = 1'b0;
