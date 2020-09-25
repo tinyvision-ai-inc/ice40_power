@@ -12,4 +12,7 @@ desktop.ini
 *.blif
 *.asc
 *.bin
+*.vcd
+tb
+*.log
 my_pll.v

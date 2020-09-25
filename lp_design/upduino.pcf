@@ -1,0 +1,63 @@
+# The LED pins are on dedicated pins and cannot be modified!
+# Note that they are negative logic (write a 0 to turn on).
+# These are also brought out to the left side of the board. 
+# Cut the board trace on jumper R28 to disable the onboard 3 color LED.
+set_io -nowarn led_green 39
+set_io -nowarn led_red	41
+set_io -nowarn led_blue	40
+
+# FTDI chip interface
+set_io -nowarn serial_txd 14 # FPGA transmit to USB
+set_io -nowarn serial_rxd 15 # FPGA receive from USB
+set_io -nowarn spi_cs 16 # Connected to SPI flash, drive high unless using SPI flash!
+
+# If using the FTDI MPSSE engine, the following signals apply
+set_io -nowarn spi_sck_io 15  # Shared with the flash
+set_io -nowarn spi_ssn_io 16  # Connected to SPI flash, drive high unless using SPI flash!
+set_io -nowarn spi_mosi_io 17 # Shared with the flash
+set_io -nowarn spi_miso_io 14 # Shared with the flash
+
+# Normal GPIO pins, left side
+set_io -nowarn gpio_23_io 23
+set_io -nowarn gpio_25_io 25
+set_io -nowarn gpio_26_io 26
+set_io -nowarn gpio_27_io 27
+set_io -nowarn gpio_32_io 32
+set_io -nowarn gpio_35_io 35
+set_io -nowarn gpio_31_io 31
+set_io -nowarn gpio_37_io 37
+set_io -nowarn gpio_34_io 34
+set_io -nowarn gpio_43_io 43
+set_io -nowarn gpio_36_io 36
+set_io -nowarn gpio_42_io 42
+set_io -nowarn gpio_38_io 38
+set_io -nowarn gpio_28_io 28
+
+# Normal GPIO pins, right side
+
+# Following pins are added on the v3.0 of the board.
+# SPI pins are brought out to the right side of the board
+
+# Note: On board 12MHz clock can be brought to IOB_25B_G3 (pin 20) which is a global
+# clock input. Short across R16 (labelled OSC on the board) to enable 12MHz clock to
+# pin 20.
+set_io -nowarn gpio_20_io 20
+set_io -nowarn gpio_10_io 10
+
+# Following are also found on v2.x of the UPduino
+set_io -nowarn gpio_12_io 12
+set_io -nowarn gpio_21_io 21
+set_io -nowarn gpio_13_io 13
+set_io -nowarn gpio_19_io 19
+set_io -nowarn gpio_18_io 18
+set_io -nowarn gpio_11_io 11
+set_io -nowarn gpio_9_io 9
+set_io -nowarn gpio_6_io 6
+set_io -nowarn gpio_44_io 44
+set_io -nowarn gpio_4_io 4
+set_io -nowarn gpio_3_io 3
+set_io -nowarn gpio_48_io 48
+set_io -nowarn gpio_45_io 45
+set_io -nowarn gpio_47_io 47
+set_io -nowarn gpio_46_io 46
+set_io -nowarn gpio_2_io 2
