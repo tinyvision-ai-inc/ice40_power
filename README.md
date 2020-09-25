@@ -70,7 +70,7 @@ A simple testbench was used to prove out the design and get rid of bugs...
 The full design consumes 62 LC's, 3 SB_GB, 1 LF_OSC, 1 HF_OSC and the RGB driver.
 Heres the current consumption of the FPGA on the core power rail. As you can see, this seems to have achieved the goal!
 
-![ICE40  low power design](lp_design\50ms_wakeup_power.png)
+![ICE40  low power design](./lp_design/50ms_wakeup_power.png)
 
 - Only power on the core rail is measured
 - The 135uA current baseline is much higher than the current in the table measured. Its not clear what this is due to.
