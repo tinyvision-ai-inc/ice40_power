@@ -8,7 +8,7 @@ rgb_blink.bin: rgb_blink.asc
 	icepack rgb_blink.asc rgb_blink.bin
 
 rgb_blink.asc: rgb_blink.json upduino.pcf
-	nextpnr-ice40 --up5k --package sg48 --json rgb_blink.json --pcf upduino.pcf --asc rgb_blink.asc   # run place and route
+	nextpnr-ice40 --up5k --package sg48 --json rgb_blink.json --pcf upduino.pcf --freq 1 --asc rgb_blink.asc   # run place and route
 
 rgb_blink.json: rgb_blink.v my_pll.v
 	yosys -q -p "synth_ice40 -json rgb_blink.json" rgb_blink.v
@@ -18,7 +18,7 @@ my_pll.v: Makefile
 
 .PHONY: flash cram
 flash:
-	iceprog -d i:0x0403:0x6014 rgb_blink.bin
+	iceprog rgb_blink.bin
 
 cram:
 	iceprog -S rgb_blink.bin

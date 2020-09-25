@@ -5,7 +5,7 @@
 //`define BLANK
 //`define EXTOSC
 //`define LFOSC // Select the low frequency 10kHz clock
-//`define USE_PLL
+`define USE_PLL
 //`define RGB_DRV
 //`define MATH
 
