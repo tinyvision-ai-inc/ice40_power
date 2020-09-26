@@ -63,7 +63,7 @@ module top
 
 // LED driver
     SB_RGBA_DRV RGB_DRIVER (
-      .RGBLEDEN (1'b1),
+      .RGBLEDEN (clk_sel),
       .RGB0PWM  (cntr[index]&cntr[index-1]),
       .RGB1PWM  (cntr[index]&~cntr[index-1]),
       .RGB2PWM  (~cntr[index]&cntr[index-1]),
